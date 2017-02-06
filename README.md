@@ -3,5 +3,5 @@ An attempt at a Robotron clone using ncurses and C, leveraging other good works 
 
 
 # How to play?
-clone the repo, then on your command line type:
-`code` make && ./robo
+clone the repo,
+on the command line type `make && ./robo`
