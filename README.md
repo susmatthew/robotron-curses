@@ -8,3 +8,9 @@ An attempt at a Robotron clone using ncurses and C, leveraging other good works 
 ### How to play?
 clone the repo,
 on the command line type `make && ./robo`
+
+
+watch the attract mode for info.
+WASD to move
+arrow keys to fire
+P to pause.
