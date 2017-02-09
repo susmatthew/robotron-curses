@@ -18,27 +18,19 @@ Hulks are indestructible and will kill humans as they approach. Your blaster wil
 Obstacles such as Electrodes in your path can be removed by firing at them with your blaster.
 Humans are worth an increasing point value. The first human scores 1000 points, the second is worth 2000 points and so on until the point value reaches 5000. The point value will remain at 5000 for all the remaining humans in the same wave. When the wave is completed or you have been killed, the points awarded for saving another human will be reset to 1000.
 
-components:
-type -- bad, good, big, color, symbol, duration (disappears, ends round alive, etc.)
-	(!bad && !good implies neutral)
-	(no color/no symbol implies invisible)
-	(big for text/scoring)
-	
-translation -- mov_type, location, max_speed (freq,) mass, collides_with
-
-creation -- _type, condition (freq, collision w/), transformation
 
 */
+#define MINY	48
+#define MINX	160
 
-#define NUMTHINGS	17
 #include <time.h>
 #include <stdint.h>
 #include <errno.h>
+#include <ncurses.h>
+#include <unistd.h>
 
 // prototypes
 void die(const char *);
-
-
 
 typedef enum {
 	grunt=0, hulk, brain, prog, spheroid, enforcer, 
@@ -49,26 +41,71 @@ typedef enum {
 typedef enum {
 	evil=1;
 	good=1<<1;
-	text=1<<2;	
+	text=1<<2;
+	player1=1<<3;
+	player2=1<<4;
+	player3=1<<5;
+	player4=1<<6;	
 } alignment;
 
-typedef struct {
-	alignment type;
-	char	*symbol;
-	
-} unit_type;
+#define NUM_ORIENTATIONS 8
+
+typedef enum { up=0,upright,right,downright,down,downleft,left,upleft } orientations;
 
 typedef struct {
-	uint8_t speed;
+	char *symbol[NUM_ORIENTATIONS];
+	orientations orientation;
+} symbols;
+
+typedef struct {
+	symbols symbol;
+	uint8_t color[10];	// color 0 is invisible.
+	uint32_t color_freq;
+	uint32_t color_accum;
+	uint8_t attribute[10];
+	uint32_t att_freq;
+	uint32_t color_accum;
+} appearance;
+
+typedef struct {
+	alignment align;
+	appearance look;
+} types;
+
+typedef struct {
+	uint8_t y,x; // y is first in ncurses.
+} location;
+
+typedef struct {
+	location pos_current;
+	location pos_old;
+	uint32_t speed;
+	uint32_t speed_accum;
 	uint8_t mov_type;
 	uint8_t mass;
 	alignment collides_with; // alignment
-} movement;
-
+} movements;
 
 typedef struct {
-	Names Name;
-	char Symbol;
-	uint16_t Value;
-	uint8_t	X,Y,Dloc; //
+	names name;
+	uint32_t freq;	// 0-none, 1-transforms, 2-on collision, >1666 is freq.
+	uint32_t freq_accum;
+	alignment collision_type;
+} makes;	
+
+typedef struct {
+	types type;
+	movements movement;
+	makes make[5];
+} things;
+
+extern things thing[TOTAL_THINGS];
+
+// linked list of things.
+
+typedef struct {
+	entity *next;
+	things thing;
 } entity;
+
+extern entity *head;
