@@ -1,11 +1,7 @@
 // roboengine.h
-<include 
+#include <stdint.h>
 
-typedef struct {
-	char type
-	int x,y,dx,dy;	// position
-			
-	// bitfield
-	// xloc
-} Entity;
+uint32_t get_tick ();
+init_engine ();
+
 
