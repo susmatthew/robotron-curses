@@ -1,0 +1,6 @@
+* set up tests for terminal size and handle tick() appropriately during any pauses
+* movement
+* AI - implemented per OG robotron
+* collisions
+* design sprites 3x3
+* sounds!

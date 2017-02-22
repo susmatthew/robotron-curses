@@ -3,23 +3,29 @@
 
 
 /*
-from http://www.arcade-museum.com/game_detail.php?game_id=9347
+from http://www.arcade-museum.com/game_detail.php?game_id=9347 . notes added from GDC postmortem and observed gameplay.
 
-Grunts (100 points) do not shoot but they will attack in large numbers.
+Grunts (100 points) do not shoot but they will attack in large numbers.hunt the player. slow get faster.
 
-Brains (500 points) can fire Cruise Missles (25 points) at you and turn humans into Progs (100 points).
+Brains (500 points) can fire Cruise Missles (25 points) at you and turn humans into Progs (100 points). Seeks nearest human. every five waves is a 'brain wave.' Cruise missile seeks player 'randomly'. 
 
-Spheroids (1000 points) can create Enforcers (150 points) which fire guided mines (25 points) at you.
+Spheroids (1000 points) can create Enforcers (150 points) which fire mines (sparks - 25 points) at you. Spark has random acceleration. follows the wall if it hits. Shot gets to you in a fixed amount of time + accelerates randomly.
 
-Quarks(1000 points) will create Tanks (200 points) that will try to run over you or fire Bounce Bombs (25 points) at you.
+Quarks(1000 points) will create Tanks (200 points) that will try to run over you or fire Bounce Bombs (25 points) at you. Relative or absolute aim. 
 
-Hulks are indestructible and will kill humans as they approach. Your blaster will only halt them as long as you are shooting them.
+Hulks are indestructible and will kill humans as they approach. Your blaster will only halt them as long as you are shooting them. 'Random' pretty slow walk.
 
 Obstacles such as Electrodes in your path can be removed by firing at them with your blaster.
 Humans are worth an increasing point value. The first human scores 1000 points, the second is worth 2000 points and so on until the point value reaches 5000. The point value will remain at 5000 for all the remaining humans in the same wave. When the wave is completed or you have been killed, the points awarded for saving another human will be reset to 1000.
 
+four shots active.
+
+25000 pts. per dude
+
+Waves end when all killable enemies are dead.
 
 */
+
 #define MINY	48
 #define MINX	160
 
@@ -58,7 +64,9 @@ typedef struct {
 } symbols;
 
 typedef struct {
-	symbols symbol;
+	symbols symbol[10];
+	uint32_t symbol_freq;
+	uint32_ symbol_accum;
 	uint8_t color[10];	// color 0 is invisible.
 	uint32_t color_freq;
 	uint32_t color_accum;
@@ -77,9 +85,11 @@ typedef struct {
 } location;
 
 typedef struct {
-	location pos_current;
+	location pos_curr;
 	location pos_old;
-	uint32_t speed;
+	location dest;
+	uint32_t orth_speed, diag_speed;
+	uint32_t speed_mod;
 	uint32_t speed_accum;
 	uint8_t mov_type;
 	uint8_t mass;

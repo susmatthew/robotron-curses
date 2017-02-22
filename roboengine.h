@@ -1,7 +1,6 @@
 // roboengine.h
 #include <stdint.h>
 
-uint32_t get_tick ();
-init_engine ();
-
-
+void uint32_t get_tick ();
+void init_engine ();
+void get_input_device (char *dest);
