@@ -2,7 +2,9 @@
 
 
 ### Roguebotron 2004
-An attempt at a Robotron 2084 clone using ncurses and C, leveraging other good works from Github. The first iteration is for Linux.
+A Robotron 2084 clone using ncurses and C, called Roguebotron because ASCII and funny-sounding. You still get dudes every 25k points, but once they're gone you're permadead until you start a new game.
+
+Leveraging other good works from Github. The first iteration is for Linux.
 
 
 ### How to play?

@@ -17,13 +17,31 @@ void init_engine (void)
 	clear();
 }
 
-uint32_t get_tick (void)
+tick get_tick (bool paused)
 {
 	clock_t currTime;
 	currTime = clock();
 	if (currTime < 0) die("no clock");
 
-	return (uint32_t) (currTime/(CLOCKS_PER_SEC/100000)); // overflows every 80 years.
+	static bool wasPaused;
+	static uint32_t pausedIn, pausedOut, tickOffset;
+	uint32_t tickNow=0;
+
+	tickNow=(uint32_t) (currTime/(CLOCKS_PER_SEC/100000));
+
+	if (paused) {
+		if (!wasPaused) pausedIn=tickNow;
+		else pausedOut=tickNow;
+	} else {
+		if (pausedIn && (pausedIn != pausedOut)) tickOffset+=(pausedOut-pausedIn);
+		pausedIn=pausedOut=0;
+	}
+
+	ticks tempTick;
+	tempTick.trueTick=tickNow;
+	tempTick.pausedTick=tickOffset;
+
+	return  tempTick; // overflows every 80 years.
 							// returns clocks per 10us
 }
 
