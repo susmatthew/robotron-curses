@@ -3,7 +3,7 @@
 
 
 /*
-from http://www.arcade-museum.com/game_detail.php?game_id=9347 . notes added from GDC postmortem and observed gameplay.
+from http://www.arcade-museum.com/game_detail.php?game_id=9347 with notes added from GDC postmortem and observed gameplay.
 
 Grunts (100 points) do not shoot but they will attack in large numbers.hunt the player. slow get faster.
 
@@ -16,18 +16,28 @@ Quarks(1000 points) will create Tanks (200 points) that will try to run over you
 Hulks are indestructible and will kill humans as they approach. Your blaster will only halt them as long as you are shooting them. 'Random' pretty slow walk.
 
 Obstacles such as Electrodes in your path can be removed by firing at them with your blaster.
-Humans are worth an increasing point value. The first human scores 1000 points, the second is worth 2000 points and so on until the point value reaches 5000. The point value will remain at 5000 for all the remaining humans in the same wave. When the wave is completed or you have been killed, the points awarded for saving another human will be reset to 1000.
+Humans are worth an increasing point value. The first human scores 1000 points, 
+the second is worth 2000 points and so on until the point value reaches 5000. 
+The point value will remain at 5000 for all the remaining humans in the same wave. 
+When the wave is completed or you have been killed, 
+the points awarded for saving another human will be reset to 1000.
 
 four shots active.
 
-25000 pts. per dude
+25000 pts. for an extra dude
 
 Waves end when all killable enemies are dead.
 
+80x60 (orginal resolution /4)
+
+"sprites" in this clone are 3x3
+
+
+
 */
 
-#define MINY	48
-#define MINX	160
+#define MINY	60
+#define MINX	80
 
 #include <time.h>
 #include <stdint.h>
@@ -48,10 +58,10 @@ typedef enum {
 	evil=1;
 	good=1<<1;
 	text=1<<2;
-	player1=1<<3;
-	player2=1<<4;
-	player3=1<<5;
-	player4=1<<6;	
+	play1=1<<3;
+	play2=1<<4;
+	play3=1<<5;
+	play4=1<<6;	
 } alignment;
 
 #define NUM_ORIENTATIONS 8
@@ -59,8 +69,12 @@ typedef enum {
 typedef enum { up=0,upright,right,downright,down,downleft,left,upleft } orientations;
 
 typedef struct {
+	char *pixel[3][3];
+} sprite;
+
+typedef struct {
 	char *symbol[NUM_ORIENTATIONS];
-	orientations orientation;
+	orientations orientation; // do I need this? refactoring ahoy.
 } symbols;
 
 typedef struct {
@@ -101,7 +115,7 @@ typedef struct {
 	uint32_t freq;	// 0-none, 1-transforms, 2-on collision, >1666 is freq.
 	uint32_t freq_accum;
 	alignment collision_type;
-} makes;	
+} makes;
 
 typedef struct {
 	types type;
@@ -118,4 +132,4 @@ typedef struct {
 	things thing;
 } entity;
 
-extern entity *head;
+extern entity *player;

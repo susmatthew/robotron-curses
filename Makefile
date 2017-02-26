@@ -1,9 +1,11 @@
 #this is a makefile
+CC = gcc
+CFLAGS = -Wall -g -std=c99 -lncurses
+DEPS = roboengine.h robocurse.h
+OBJ = roboengine.o robocurse.o
 
-CFLAGS=-Wall -g -std=c99
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-all:
-	gcc -Wall robocurse.c roboengine.c -o robocurse -lncurses
-
-clean:
-	rm -f robocurse
+robomake: $(OBJ)
+	gcc -o $@ $^ $(CFLAGS)
